@@ -27,7 +27,7 @@ enum RecordingState {
   Stopped,
 }
 
-class _RecorderHomeViewState extends State<RecorderHomeView> {
+class _RecorderHomeViewState extends State<RecorderHomeView> with TickerProviderStateMixin {
   late Directory appDirectory;
   Directory audioDirectory = Directory("./");
   List<String> records = [];
@@ -36,10 +36,18 @@ class _RecorderHomeViewState extends State<RecorderHomeView> {
   RecordingState _recordingState = RecordingState.UnSet;
   Duration duration = Duration();
   Timer? timer;
+  AnimationController? _animationController;
+  Animation? _animation;
   // Recorder properties
   late FlutterAudioRecorder2 audioRecorder;
 
   void startTimer() {
+    _animationController = AnimationController(vsync: this,duration: Duration(seconds: 2))..repeat();
+    _animation =  Tween(begin: 2.0,end: 25.0).animate(_animationController!)..addListener((){
+      setState(() {
+
+      });
+    });
     timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
   }
 
@@ -52,11 +60,13 @@ class _RecorderHomeViewState extends State<RecorderHomeView> {
   }
 
   void stopTimer() {
+    _animationController!.reset();
     setState(() {
       duration = Duration();
       timer?.cancel();
     });
   }
+
   @override
   void initState() {
     super.initState();
@@ -77,6 +87,9 @@ class _RecorderHomeViewState extends State<RecorderHomeView> {
   @override
   void dispose() {
     _recordingState = RecordingState.UnSet;
+    if(_animationController != null) {
+      _animationController!.dispose();
+    }
     super.dispose();
     timer?.cancel();
   }
@@ -132,7 +145,7 @@ class _RecorderHomeViewState extends State<RecorderHomeView> {
         body: Column(
           children: [
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Padding(
                 padding: EdgeInsets.all(5),
                 child: RecordListView(
@@ -146,6 +159,9 @@ class _RecorderHomeViewState extends State<RecorderHomeView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildTime(),
+                  SizedBox(
+                    height: 25,
+                  ),
                   MaterialButton(
                     onPressed: () async {
                       await _onRecordButtonPressed();
@@ -161,11 +177,25 @@ class _RecorderHomeViewState extends State<RecorderHomeView> {
                         _recordIcon,
                         size: 50,
                       ),
+                      decoration: _recordText == 'Recording' ?
+                      BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: appWhite,
+                          boxShadow: [BoxShadow(
+                              color: appColorAccent,
+                              blurRadius: _animation!.value,
+                              spreadRadius: _animation!.value
+                          )]
+                      ) :
+                      BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: appColorAccent,
+                      )
                     ),
                   ),
                   Padding(
                     child: text(_recordText),
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(20),
                   )
                 ],
               ),
@@ -181,11 +211,37 @@ class _RecorderHomeViewState extends State<RecorderHomeView> {
 
   Widget buildTime() {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(duration.inHours.remainder(60));
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
 
-    return text('$minutes:$seconds');
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          buildTimeCard(time: hours, header:'Hours'),
+          SizedBox(width: 8,),
+          buildTimeCard(time: minutes, header:'Mins'),
+          SizedBox(width: 8,),
+          buildTimeCard(time: seconds, header:'Secs'),
+        ]
+    );
   }
+
+  Widget buildTimeCard({required String time, required String header}) =>
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                color: appColorSecondary,
+                borderRadius: BorderRadius.circular(25)
+            ),
+            child: Text(time, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black,fontSize: 10),),
+          ),
+          text(header,textColor: TextColorSecondary, fontSize: 10.0),
+        ],
+      );
 
   Future<void> _onRecordButtonPressed() async {
     switch (_recordingState) {
@@ -196,7 +252,7 @@ class _RecorderHomeViewState extends State<RecorderHomeView> {
       case RecordingState.Recording:
         await _stopRecording();
         _recordingState = RecordingState.Stopped;
-        _recordIcon = Icons.fiber_manual_record;
+        _recordIcon = Icons.mic_outlined;
         _recordText = 'Record a New One';
         break;
 

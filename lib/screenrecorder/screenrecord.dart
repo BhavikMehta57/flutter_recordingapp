@@ -65,6 +65,7 @@ import 'package:recording_app/home/home.dart';
 import 'package:recording_app/main/utils/AppColors.dart';
 import 'package:recording_app/main/utils/AppConstant.dart';
 import 'package:recording_app/main/utils/AppWidget.dart';
+import 'package:recording_app/main/utils/animation/fadeAnimation.dart';
 
 class ScreenRecorder extends StatefulWidget {
   @override
@@ -130,35 +131,71 @@ class _ScreenRecorderState extends State<ScreenRecorder> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             buildTime(),
+            SizedBox(
+              height: 10,
+            ),
             !recording
                 ?
-            Center(
-              child: MaterialButton(
-                child: text("Record Screen"),
-                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0), side: BorderSide(color: appDarkRed, width: 1)),
-                color: appWhite,
-                onPressed: () => startScreenRecord(false),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(40, 16, 40, 16),
+              child: FadeAnimation(
+                  1.2,
+                  Center(
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        // height: double.infinity,
+                        child: MaterialButton(
+                          child: text("Record Screen"),
+                          shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0), side: BorderSide(color: appDarkRed, width: 1)),
+                          color: appWhite,
+                          onPressed: () => startScreenRecord(false),
+                        ),
+                      )
+                  )
               ),
             )
                 :
             Container(),
             !recording
                 ?
-            Center(
-              child: MaterialButton(
-                child: text("Record Screen & Audio"),
-                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0), side: BorderSide(color: appDarkRed, width: 1)),
-                color: appWhite,
-                onPressed: () => startScreenRecord(true),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(40, 16, 40, 16),
+              child: FadeAnimation(
+                  1.2,
+                  Center(
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        // height: double.infinity,
+                        child: MaterialButton(
+                          child: text("Record Screen & Audio"),
+                          shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0), side: BorderSide(color: appDarkRed, width: 1)),
+                          color: appWhite,
+                          onPressed: () => startScreenRecord(true),
+                        ),
+                      )
+                  )
               ),
             )
                 :
-            Center(
-              child: MaterialButton(
-                child: text("Stop Recording"),
-                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0), side: BorderSide(color: appDarkRed, width: 1)),
-                color: appWhite,
-                onPressed: () => stopScreenRecord(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(40, 16, 40, 16),
+              child: FadeAnimation(
+                  1.2,
+                  Center(
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        // height: double.infinity,
+                        child: MaterialButton(
+                          child: text("Stop Recording"),
+                          shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0), side: BorderSide(color: appDarkRed, width: 1)),
+                          color: appWhite,
+                          onPressed: () => stopScreenRecord(),
+                        ),
+                      )
+                  )
               ),
             )
           ],
@@ -205,10 +242,42 @@ class _ScreenRecorderState extends State<ScreenRecorder> {
 
   Widget buildTime() {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(duration.inHours.remainder(60));
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
 
-    return text('$minutes:$seconds');
+    return FadeAnimation(
+      1.2,
+        Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              buildTimeCard(time: hours, header:'HOURS'),
+              SizedBox(width: 10),
+              buildTimeCard(time: minutes, header:'MINUTES'),
+              SizedBox(width: 10),
+              buildTimeCard(time: seconds, header:'SECONDS'),
+            ]
+        )
+    );
   }
+
+  Widget buildTimeCard({required String time, required String header}) =>
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+                color: appColorSecondary,
+                borderRadius: BorderRadius.circular(20)
+            ),
+            child: Text(
+              time, style: TextStyle(fontWeight: FontWeight.bold,
+                color: Colors.black,fontSize: 60),),
+          ),
+          SizedBox(height: 5,),
+          text(header,textColor: TextColorSecondary),
+        ],
+      );
 
 }

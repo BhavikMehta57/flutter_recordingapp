@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:recording_app/audio/recorder_home_view.dart';
 import 'package:recording_app/authentication/Login.dart';
 import 'package:recording_app/main.dart';
@@ -22,10 +24,26 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   String link="";
+  String username="";
+  String useremail="";
 
   @override
   void initState(){
     super.initState();
+    getUserDetails();
+  }
+
+  Future<void> getUserDetails() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .get()
+        .then((value) {
+      setState(() {
+        username = value.data()!["Full Name"];
+        useremail = value.data()!["Email"];
+      });
+    });
   }
 
   signOut() {
@@ -74,6 +92,55 @@ class HomeState extends State<Home> {
         ),
         body: ListView(
           children: [
+            Container(
+              padding: EdgeInsets.all(spacing_large),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: boxDecorationWithShadow(
+                      spreadRadius: 0.5,
+                      blurRadius: 0.5,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        CircleAvatar(
+                          radius: 40,
+                          child: ClipOval(
+                            child: Icon(Icons.person, size: 50.0,)
+                          ),
+                        ),
+                        20.width,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            5.height,
+                            Text("$username",
+                                style: boldTextStyle(
+                                    color: TextColorPrimary, size: 18)),
+                            5.height,
+                            Text("${FirebaseAuth.instance.currentUser!.phoneNumber!.substring(0, 3)} ${FirebaseAuth.instance.currentUser!.phoneNumber!.substring(3)}",
+                                style: primaryTextStyle(
+                                    color: TextColorSecondary,
+                                    size: 16,
+                                    fontFamily: fontMedium)),
+                            5.height,
+                            Text("$useremail",
+                                style: boldTextStyle(
+                                    color: TextColorSecondary, size: 16)),
+                          ],
+                        ).expand()
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [

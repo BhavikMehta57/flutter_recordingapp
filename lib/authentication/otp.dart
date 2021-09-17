@@ -179,6 +179,8 @@ class _OtpState extends State<Otp> {
                       1,
                       MaterialButton(
                         child: text("Verify OTP"),
+                        shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0), side: BorderSide(color: appColorPrimary, width: 1)),
+                        color: appWhite,
                         onPressed: () async {
                           final code = _codeController.text.trim();
                           if(code.length != 6){

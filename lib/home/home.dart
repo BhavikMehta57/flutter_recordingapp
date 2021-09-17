@@ -95,6 +95,11 @@ class HomeState extends State<Home> {
                     decoration: boxDecoration(bgColor: appColorPrimary.withOpacity(0.2), radius: spacing_standard),
                     child: TextButton(
                       onPressed: () {
+                        // Navigator.of(context).pushAndRemoveUntil(
+                        //     MaterialPageRoute(
+                        //       builder: (context) => RecorderHomeView(title: 'Audio Recording'),
+                        //     ),
+                        //         (Route<dynamic> route) => false);
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (BuildContext context) => RecorderHomeView(title: 'Audio Recording')));
                       },
@@ -121,6 +126,11 @@ class HomeState extends State<Home> {
                     decoration: boxDecoration(bgColor: appColorPrimary.withOpacity(0.2), radius: spacing_standard),
                     child: TextButton(
                       onPressed: () {
+                        // Navigator.of(context).pushAndRemoveUntil(
+                        //     MaterialPageRoute(
+                        //       builder: (context) => ScreenRecorder(),
+                        //     ),
+                        //         (Route<dynamic> route) => false);
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (BuildContext context) => ScreenRecorder()));
                       },

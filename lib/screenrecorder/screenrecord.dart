@@ -61,7 +61,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_recording/flutter_screen_recording.dart';
+import 'package:recording_app/home/home.dart';
 import 'package:recording_app/main/utils/AppColors.dart';
+import 'package:recording_app/main/utils/AppConstant.dart';
 import 'package:recording_app/main/utils/AppWidget.dart';
 
 class ScreenRecorder extends StatefulWidget {
@@ -106,10 +108,24 @@ class _ScreenRecorderState extends State<ScreenRecorder> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: text("Screen Recorder", textColor: TextColorPrimary),
-      ),
+    return new WillPopScope(
+      child: new Scaffold(
+        appBar: AppBar(
+            title: text("Screen Recorder", textColor: TextColorPrimary),
+            leading: (!recording) ? GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => Home(),
+                    ),
+                        (Route<dynamic> route) => false);
+              },
+              child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Icon(homeIcon,color: appColorPrimary))
+              ,
+            ) : Container()
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -147,6 +163,10 @@ class _ScreenRecorderState extends State<ScreenRecorder> {
             )
           ],
         ),
+      ),
+      onWillPop: () async {
+        return false;
+      },
     );
   }
 

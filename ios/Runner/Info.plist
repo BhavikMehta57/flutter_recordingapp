@@ -44,5 +44,8 @@
 
 	<key>NSMicrophoneUsageDescription</key>
     <string>Can We Use Your Microphone Please</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Save video in gallery</string>
+
 </dict>
 </plist>

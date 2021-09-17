@@ -10,6 +10,7 @@ import 'package:recording_app/main.dart';
 import 'package:recording_app/main/utils/AppColors.dart';
 import 'package:recording_app/main/utils/AppConstant.dart';
 import 'package:recording_app/main/utils/AppWidget.dart';
+import 'package:recording_app/screenrecorder/screenrecord.dart';
 import 'package:share/share.dart';
 
 class Home extends StatefulWidget {
@@ -185,6 +186,8 @@ class HomeState extends State<Home> {
                     decoration: boxDecoration(bgColor: appColorPrimary.withOpacity(0.2), radius: spacing_standard),
                     child: TextButton(
                       onPressed: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (BuildContext context) => ScreenRecorder()));
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,

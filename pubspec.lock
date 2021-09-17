@@ -316,6 +316,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.6"
+  device_screen_recorder:
+    dependency: "direct main"
+    description:
+      name: device_screen_recorder
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1"
   dots_indicator:
     dependency: "direct main"
     description:
@@ -447,6 +454,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.2"
+  flutter_foreground_plugin:
+    dependency: transitive
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "8a09c7b0aeb9d31204147fe6ee126c8a52471e3a"
+      url: "https://github.com/jja08111/flutter_foreground_service_plugin"
+    source: git
+    version: "0.8.0"
   flutter_launcher_icons:
     dependency: "direct main"
     description:
@@ -468,6 +484,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.3"
+  flutter_screen_recording:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "7881eab910882c081d0e2e88d50bc0414c8bc8d1"
+      url: "git://github.com/BhavikMehta57/flutter_screen_recording.git"
+    source: git
+    version: "1.1.0"
   flutter_slidable:
     dependency: "direct main"
     description:

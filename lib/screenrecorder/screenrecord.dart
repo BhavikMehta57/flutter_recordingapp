@@ -60,8 +60,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_screen_recording/flutter_screen_recording.dart';
+import 'package:recording_app/main/utils/AppColors.dart';
+import 'package:recording_app/main/utils/AppWidget.dart';
 
 class ScreenRecorder extends StatefulWidget {
   @override
@@ -70,69 +71,96 @@ class ScreenRecorder extends StatefulWidget {
 
 class _ScreenRecorderState extends State<ScreenRecorder> {
   bool recording = false;
-  int _time = 0;
-
+  Duration duration = Duration();
+  Timer? timer;
 
   @override
   void initState() {
     super.initState();
   }
 
-
   @override
   void dispose() {
     super.dispose();
+    timer?.cancel();
+  }
+
+  void startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
+  }
+
+  void addTime() {
+    final addSeconds = 1;
+    setState(() {
+      final seconds = duration.inSeconds + addSeconds;
+      duration = Duration(seconds: seconds);
+    });
+  }
+
+  void stopTimer() {
+    setState(() {
+      duration = Duration();
+      timer?.cancel();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Flutter Screen Recording'),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: text("Screen Recorder", textColor: TextColorPrimary),
+      ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Time: $_time\n'),
+            buildTime(),
             !recording
-                ? Center(
-              child: RaisedButton(
-                child: Text("Record Screen"),
+                ?
+            Center(
+              child: MaterialButton(
+                child: text("Record Screen"),
+                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0), side: BorderSide(color: appDarkRed, width: 1)),
+                color: appWhite,
                 onPressed: () => startScreenRecord(false),
               ),
             )
-                : Container(),
+                :
+            Container(),
             !recording
-                ? Center(
-              child: RaisedButton(
-                child: Text("Record Screen & audio"),
+                ?
+            Center(
+              child: MaterialButton(
+                child: text("Record Screen & Audio"),
+                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0), side: BorderSide(color: appDarkRed, width: 1)),
+                color: appWhite,
                 onPressed: () => startScreenRecord(true),
               ),
             )
-                : Center(
-              child: RaisedButton(
-                child: Text("Stop Record"),
+                :
+            Center(
+              child: MaterialButton(
+                child: text("Stop Recording"),
+                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0), side: BorderSide(color: appDarkRed, width: 1)),
+                color: appWhite,
                 onPressed: () => stopScreenRecord(),
               ),
             )
           ],
         ),
-      ),
     );
   }
 
   startScreenRecord(bool audio) async {
     bool start = false;
     await Future.delayed(const Duration(milliseconds: 1000));
-
     if (audio) {
-      start = (await FlutterScreenRecording.startRecordScreenAndAudio("Title" + _time.toString(),  titleNotification:"dsffad", messageNotification: "sdffd"))!;
+      start = (await FlutterScreenRecording.startRecordScreenAndAudio("ScreenRecordingWithAudio_${DateTime.now().millisecondsSinceEpoch.toString()}"))!;
     } else {
-      start = (await FlutterScreenRecording.startRecordScreen("Title", titleNotification:"dsffad", messageNotification: "sdffd"))!;
+      start = (await FlutterScreenRecording.startRecordScreen("ScreenRecording_${DateTime.now().millisecondsSinceEpoch.toString()}"))!;
     }
 
     if (start) {
+      startTimer();
       setState(() => recording = !recording);
     }
 
@@ -141,10 +169,26 @@ class _ScreenRecorderState extends State<ScreenRecorder> {
 
   stopScreenRecord() async {
     String path = await FlutterScreenRecording.stopRecordScreen;
+    stopTimer();
     setState(() {
       recording = !recording;
     });
     print("Opening video");
     print(path);
+    final snackBar = SnackBar(
+      content: Text('Video Saved at $path'),
+      duration: Duration(seconds: 10),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
   }
+
+  Widget buildTime() {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return text('$minutes:$seconds');
+  }
+
 }

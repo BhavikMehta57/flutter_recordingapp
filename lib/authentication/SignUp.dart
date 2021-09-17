@@ -47,7 +47,6 @@ class _SignupState extends State<Signup> {
       "Phone Number": phone,
       "Email": email,
       "Password": password,
-      "Profile Url": DefaultProfilPhotoURL,
       "Registered On": DateTime.now().toString(),
     });
   }

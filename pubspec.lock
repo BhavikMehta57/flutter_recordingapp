@@ -316,13 +316,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.6"
-  device_screen_recorder:
-    dependency: "direct main"
-    description:
-      name: device_screen_recorder
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.1"
   dots_indicator:
     dependency: "direct main"
     description:

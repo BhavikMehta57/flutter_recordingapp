@@ -34,56 +34,6 @@ class HomeState extends State<Home> {
         Login()), (Route<dynamic> route) => false));
   }
 
-  int _currentIndex = 0;
-  int _pageIndex = 0;
-
-  final List<Widget> _children = [
-    Home(),
-    // Announcements(),
-    // SubmitPoints(),
-    // Rules(),
-    // Profile(),
-  ];
-
-  _onTap() {
-    if(_currentIndex != 1){
-      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => _children[_currentIndex])); // this has changed
-    }
-    else{
-      showModalBottomSheet(
-          context: context,
-          builder: (context) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                ListTile(
-                  leading: Icon(Icons.mic_none_outlined,color: appColorPrimary),
-                  title: text('Audio'),
-                  onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (BuildContext context) => RecorderHomeView(title: 'Audio Recording')));
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.mobile_screen_share_outlined,color: appColorPrimary),
-                  title: text('Screen Without Audio'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.mobile_screen_share_rounded,color: appColorPrimary),
-                  title: text('Screen With Audio'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            );
-          });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -121,21 +71,6 @@ class HomeState extends State<Home> {
             ),
           ],
           centerTitle: false,
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _pageIndex,
-          onTap: (index) { // this has changed
-            setState(() {
-              _currentIndex = index;
-            });
-            _onTap();
-          },
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.home,color: appColorPrimary), title: Text("Home",style: TextStyle(color: Colors.red)),backgroundColor: appLayout_background),
-            BottomNavigationBarItem(icon: Icon(Icons.add_circle,color: appColorPrimary,size: 50.0,), title: Text("Record",style: TextStyle(color: Colors.red)),backgroundColor: app_Background),
-            BottomNavigationBarItem(icon: Icon(Icons.settings,color: appColorPrimary), title: Text("Settings",style: TextStyle(color: Colors.red)),backgroundColor: app_Background),
-          ],
-
         ),
         body: ListView(
           children: [
